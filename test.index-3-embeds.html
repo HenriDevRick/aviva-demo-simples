@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviva Resorts - Serviços</title>
+    <style>
+        :root {
+            --aviva-blue: #003366;
+            --aviva-gold: #c5a059;
+            --aviva-light: #f4f7f9;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--aviva-light);
+            color: var(--text-color);
+        }
+
+        header {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--aviva-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--aviva-blue);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .tab-button:hover {
+            color: var(--aviva-blue);
+        }
+
+        .tab-button.active {
+            color: var(--aviva-blue);
+            border-bottom-color: var(--aviva-gold);
+        }
+
+        .tab-title {
+            color: var(--aviva-blue);
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .embed-container {
+            min-height: 600px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 600px;
+            color: #666;
+            font-size: 16px;
+            position: absolute;
+            inset: 0;
+            background: white;
+            z-index: 5;
+            transition: opacity 0.3s;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--aviva-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab-button {
+                width: 100%;
+                text-align: left;
+                border-bottom: none;
+                border-left: 3px solid transparent;
+                padding-left: 20px;
+            }
+            .tab-button.active {
+                border-left-color: var(--aviva-gold);
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Aviva <span style="color: var(--aviva-gold);">Resorts</span></div>
+    </header>
+
+    <div class="container">
+        <h1>Nossos Serviços</h1>
+        <p class="subtitle">Escolha um serviço para gerenciar sua experiência.</p>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab(0)">Confirmação de Reserva</button>
+            <button class="tab-button" onclick="switchTab(1)">Check-in Digital</button>
+            <button class="tab-button" onclick="switchTab(2)">Check-out Digital</button>
+        </div>
+
+        <h2 class="tab-title" id="tabTitle">Confirmação de Reserva</h2>
+
+        <div class="embed-container" id="embedContainer">
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <span>Carregando formulário...</span>
+            </div>
+            <div id="embedMount"></div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Aviva Resorts - Experiências que conectam.
+    </footer>
+
+    <script>
+        const configs = [
+            {
+                label:      'Confirmação de Reserva',
+                caseTypeID: 'Aviva-Experience-Work-BookingConfirmation',
+                clientId:   '12444249209306947994'
+            },
+            {
+                label:      'Check-in Digital',
+                caseTypeID: 'Aviva-Experience-Work-CheckinDigital',
+                clientId:   '55966357118681751596'
+            },
+            {
+                label:      'Check-out Digital',
+                caseTypeID: 'Aviva-Experience-Work-CheckoutDigital',
+                clientId:   '13673903982745833564'
+            }
+        ];
+
+        let currentTab = -1;
+
+        function switchTab(index) {
+            if (index === currentTab) return;
+            currentTab = index;
+
+            // Atualiza botões
+            document.querySelectorAll('.tab-button').forEach(function(btn, i) {
+                btn.classList.toggle('active', i === index);
+            });
+
+            // Atualiza título
+            document.getElementById('tabTitle').textContent = configs[index].label;
+
+            // Mostra loading
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+
+            // Destroi embed anterior
+            document.getElementById('embedMount').innerHTML = '';
+
+            // Aguarda DOM limpar antes de recriar
+            setTimeout(function() {
+                var cfg = configs[index];
+                var embed = document.createElement('pega-embed');
+                embed.setAttribute('action', 'createCase');
+                embed.setAttribute('caseTypeID', cfg.caseTypeID);
+                embed.setAttribute('themeID', 'pzCosmosDefault');
+                embed.setAttribute('casePage', 'assignment');
+                embed.setAttribute('assignmentHeader', 'false');
+                embed.setAttribute('appAlias', 'aviva--experincia-do-hspede-1');
+                embed.setAttribute('pegaServerUrl', 'https://adqura02.pegalabs.io/prweb/');
+                embed.setAttribute('grantType', 'customBearer');
+                embed.setAttribute('clientId', cfg.clientId);
+                embed.setAttribute('style', 'width:100%; display:block;');
+
+                document.getElementById('embedMount').appendChild(embed);
+
+                // Esconde loading quando o embed renderizar (fallback: 5s)
+                var hide = function() {
+                    document.getElementById('loadingIndicator').classList.add('hidden');
+                };
+                embed.addEventListener('load',  hide, { once: true });
+                embed.addEventListener('ready', hide, { once: true });
+                setTimeout(hide, 5000);
+
+            }, 80);
+        }
+
+        // Carrega o script do Pega uma única vez e inicia na aba 0
+        (function() {
+            var s = document.createElement('script');
+            s.src = 'https://adqura02.pegalabs.io/prweb/PRRestService/c11nsvc/v1/pega-embed.js';
+            s.onload = function() { switchTab(0); };
+            s.onerror = function() {
+                document.querySelector('.loading span').textContent =
+                    'Erro ao carregar o Pega. Verifique a conexão com o servidor.';
+            };
+            document.head.appendChild(s);
+        })();
+    </script>
+
+</body>
+</html>
