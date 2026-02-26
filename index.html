@@ -224,21 +224,16 @@
             if (index === currentTab) return;
             currentTab = index;
 
-            // Atualiza botões
             document.querySelectorAll('.tab-button').forEach(function(btn, i) {
                 btn.classList.toggle('active', i === index);
             });
 
-            // Atualiza título
             document.getElementById('tabTitle').textContent = configs[index].label;
 
-            // Mostra loading
             document.getElementById('loadingIndicator').classList.remove('hidden');
 
-            // Destroi embed anterior
             document.getElementById('embedMount').innerHTML = '';
 
-            // Aguarda DOM limpar antes de recriar
             setTimeout(function() {
                 var cfg = configs[index];
                 var embed = document.createElement('pega-embed');
@@ -248,14 +243,13 @@
                 embed.setAttribute('casePage', 'assignment');
                 embed.setAttribute('assignmentHeader', 'false');
                 embed.setAttribute('appAlias', 'aviva--experincia-do-hspede-1');
-                embed.setAttribute('pegaServerUrl', 'https://adqura02.pegalabs.io/prweb/');
+                embed.setAttribute('pegaServerUrl', 'https://reguv.pegatsdemo.com/prweb/');
                 embed.setAttribute('grantType', 'customBearer');
                 embed.setAttribute('clientId', cfg.clientId);
                 embed.setAttribute('style', 'width:100%; display:block;');
 
                 document.getElementById('embedMount').appendChild(embed);
 
-                // Esconde loading quando o embed renderizar (fallback: 5s)
                 var hide = function() {
                     document.getElementById('loadingIndicator').classList.add('hidden');
                 };
@@ -266,10 +260,9 @@
             }, 80);
         }
 
-        // Carrega o script do Pega uma única vez e inicia na aba 0
         (function() {
             var s = document.createElement('script');
-            s.src = 'https://adqura02.pegalabs.io/prweb/PRRestService/c11nsvc/v1/pega-embed.js';
+            s.src = 'https://reguv.pegatsdemo.com/prweb/PRRestService/c11nsvc/v1/pega-embed.js';
             s.onload = function() { switchTab(0); };
             s.onerror = function() {
                 document.querySelector('.loading span').textContent =
