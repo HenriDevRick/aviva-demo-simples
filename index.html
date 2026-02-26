@@ -105,6 +105,15 @@
             position: relative;
         }
 
+        .pega-tab-content {
+            display: none;
+            min-height: 600px;
+        }
+
+        .pega-tab-content.active {
+            display: block;
+        }
+
         .loading {
             display: flex;
             align-items: center;
@@ -187,17 +196,28 @@
         <h2 class="tab-title" id="tabTitle">Confirmação de Reserva</h2>
 
         <div class="embed-container" id="embedContainer">
-            <div class="loading" id="loadingIndicator">
-                <div class="spinner"></div>
-                <span>Carregando formulário...</span>
+            <!-- Aba 1: Confirmação de Reserva -->
+            <div class="pega-tab-content active" id="pega-tab-0">
+                <pega-embed id='theEmbed-0' action='createCase' caseTypeID='Aviva-Experience-Work-BookingConfirmation' themeID='pzCosmosDefault' casePage='assignment' assignmentHeader='false' appAlias='aviva--experincia-do-hspede-1' pegaServerUrl='https://reguv.pegatsdemo.com/prweb/' grantType='customBearer' clientId='12444249209306947994' style='width:100%; display:block;'></pega-embed>
             </div>
-            <div id="embedMount"></div>
+
+            <!-- Aba 2: Check-in Digital -->
+            <div class="pega-tab-content" id="pega-tab-1">
+                <pega-embed id='theEmbed-1' action='createCase' caseTypeID='Aviva-Experience-Work-CheckinDigital' themeID='pzCosmosDefault' casePage='assignment' assignmentHeader='false' appAlias='aviva--experincia-do-hspede-1' pegaServerUrl='https://reguv.pegatsdemo.com/prweb/' grantType='customBearer' clientId='55966357118681751596' style='width:100%; display:block;'></pega-embed>
+            </div>
+
+            <!-- Aba 3: Check-out Digital -->
+            <div class="pega-tab-content" id="pega-tab-2">
+                <pega-embed id='theEmbed-2' action='createCase' caseTypeID='Aviva-Experience-Work-CheckoutDigital' themeID='pzCosmosDefault' casePage='assignment' assignmentHeader='false' appAlias='aviva--experincia-do-hspede-1' pegaServerUrl='https://reguv.pegatsdemo.com/prweb/' grantType='customBearer' clientId='13673903982745833564' style='width:100%; display:block;'></pega-embed>
+            </div>
         </div>
     </div>
 
     <footer>
         &copy; 2026 Aviva Resorts - Experiências que conectam.
     </footer>
+
+    <script src='https://reguv.pegatsdemo.com/prweb/PRRestService/c11nsvc/v1/pega-embed.js'></script>
 
     <script>
         const configs = [
@@ -224,52 +244,30 @@
             if (index === currentTab) return;
             currentTab = index;
 
+            // Atualiza os botões de aba
             document.querySelectorAll('.tab-button').forEach(function(btn, i) {
                 btn.classList.toggle('active', i === index);
             });
 
+            // Atualiza o título da aba
             document.getElementById('tabTitle').textContent = configs[index].label;
 
-            document.getElementById('loadingIndicator').classList.remove('hidden');
+            // Remove a classe 'active' de todas as abas
+            document.querySelectorAll('.pega-tab-content').forEach(function(tab) {
+                tab.classList.remove('active');
+            });
 
-            document.getElementById('embedMount').innerHTML = '';
-
-            setTimeout(function() {
-                var cfg = configs[index];
-                var embed = document.createElement('pega-embed');
-                embed.setAttribute('action', 'createCase');
-                embed.setAttribute('caseTypeID', cfg.caseTypeID);
-                embed.setAttribute('themeID', 'pzCosmosDefault');
-                embed.setAttribute('casePage', 'assignment');
-                embed.setAttribute('assignmentHeader', 'false');
-                embed.setAttribute('appAlias', 'aviva--experincia-do-hspede-1');
-                embed.setAttribute('pegaServerUrl', 'https://reguv.pegatsdemo.com/prweb/');
-                embed.setAttribute('grantType', 'customBearer');
-                embed.setAttribute('clientId', cfg.clientId);
-                embed.setAttribute('style', 'width:100%; display:block;');
-
-                document.getElementById('embedMount').appendChild(embed);
-
-                var hide = function() {
-                    document.getElementById('loadingIndicator').classList.add('hidden');
-                };
-                embed.addEventListener('load',  hide, { once: true });
-                embed.addEventListener('ready', hide, { once: true });
-                setTimeout(hide, 5000);
-
-            }, 80);
+            // Adiciona a classe 'active' à aba correspondente
+            const activeTab = document.getElementById('pega-tab-' + index);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
         }
 
-        (function() {
-            var s = document.createElement('script');
-            s.src = 'https://reguv.pegatsdemo.com/prweb/PRRestService/c11nsvc/v1/pega-embed.js';
-            s.onload = function() { switchTab(0); };
-            s.onerror = function() {
-                document.querySelector('.loading span').textContent =
-                    'Erro ao carregar o Pega. Verifique a conexão com o servidor.';
-            };
-            document.head.appendChild(s);
-        })();
+        // Inicializa a primeira aba ao carregar a página
+        window.addEventListener('load', function() {
+            switchTab(0);
+        });
     </script>
 
 </body>
